@@ -9,11 +9,15 @@ const PostSchema = new mongoose.Schema({
         text: {
             type: String,
             required: true,
-            unique: true,
+            // unique: true,
         },
-        tags: {
+        subj: {
             type: Array,
             default: [],
+        },
+        grade: {
+            type: String,
+            required: true,
         },
         viewsCount: {
             type: Number,

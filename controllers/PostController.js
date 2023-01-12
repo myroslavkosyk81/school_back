@@ -1,14 +1,14 @@
 import PostModel from '../models/Post.js';
 
-export const getLastTags = async (req, res) => {
+export const getGrade = async (req, res) => {
     try {
         const posts = await PostModel.find().limit(100).exec();
-        const tagsUnfiltered = posts
-        .map((obj) => obj.tags)
+        const gradeUnfiltered = posts
+        .map((obj) => obj.grade)
         .flat()
         .slice(0, 100);
-        const tags = [... new Set(tagsUnfiltered)]
-        res.json(tags);
+        const grade = [... new Set(gradeUnfiltered)]
+        res.json(grade);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -16,10 +16,46 @@ export const getLastTags = async (req, res) => {
         })
     }
 };
+
+
+export const getLastSubj = async (req, res) => {
+    try {
+        const posts = await PostModel.find().limit(100).exec();
+        const subjUnfiltered = posts
+        .map((obj) => obj.subj)
+        .flat()
+        .slice(0, 100);
+        const subj = [... new Set(subjUnfiltered)]
+        res.json(subj);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не вдалос завантажити теги",
+        })
+    }
+};
+export const getSubjGr = async (req, res) => {
+   
+    try {
+        const posts = await PostModel.find( {grade: req.params.gradeN } ).limit(200).exec();
+        const subjUnfiltered = posts
+        .map((obj) => obj.subj)
+        .flat()
+        .slice(0, 200);
+        const subj = [... new Set(subjUnfiltered)]
+        res.json(subj);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не вдалос завантажити теги",
+        })
+    }
+};
+
+
 export const getAll = async (req, res) => {
     try {
         const posts = await PostModel.find().populate('user').exec();
-        // const posts = await PostModel.find( {tags: '2'} ).populate('user').exec();
         res.json(posts);
     } catch (err) {
         console.log(err);
@@ -29,10 +65,22 @@ export const getAll = async (req, res) => {
     }
 };
 export const getAllF = async (req, res) => {
-    // console.log(req.params)
     try {
-        // const posts = await PostModel.find().populate('user').exec();
-        const posts = await PostModel.find( {tags: req.params.tagsN } ).populate('user').exec();
+        const posts = await PostModel.find( {subj: req.params.subjN }).populate('user').exec();
+        res.json(posts);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не вдалос завантажити статті",
+        })
+    }
+};
+export const getGrSubjPost = async (req, res) => {
+    // console.log(req.params)
+    // console.log(subjN);
+    // console.log(gradeN);
+    try {
+        const posts = await PostModel.find( {subj: req.params.subjN, grade: req.params.gradeN }).populate('user').exec();
         res.json(posts);
     } catch (err) {
         console.log(err);
@@ -117,9 +165,10 @@ export const update = async (req, res) => {
             {
                 title: req.body.title,
                 text: req.body.text,
+                grade: req.body.grade,
                 imageUrl: req.body.imageUrl,
                 user: req.userId,
-                tags: req.body.tags.split(','),
+                subj: req.body.subj.split(','),
             }
         );
         res.json({
@@ -139,8 +188,9 @@ export const create = async (req, res) => {
         const doc = new PostModel({
             title: req.body.title,
             text: req.body.text,
+            grade: req.body.grade,
             imageUrl: req.body.imageUrl,
-            tags: req.body.tags.split(','),
+            subj: req.body.subj.split(','),
             user: req.userId,
         });
 

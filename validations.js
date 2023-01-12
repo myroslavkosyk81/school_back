@@ -14,6 +14,7 @@ export const registerValidation = [
 export const postCreateValidation = [
     body('title', 'Мінімальна довжина тексту 3 символи').isLength({min: 3}).isString(),
     body('text', 'Мінімальна довжина тексту 3 символи').isLength({min: 3}).isString(),
-    body('tags', 'Невірний формат').optional().isString(),
+    body('subj', 'Невірний формат').isLength({min: 3}).isString(),
+    body('grade', 'Невірний формат').isLength({min: 1}).isString(),
     body('imageUrl', 'Невірне посилання').optional().isString(),
 ];
